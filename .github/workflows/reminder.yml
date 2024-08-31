@@ -3,6 +3,7 @@ name: Cooking Reminder
 on:
   schedule:
     - cron: '0 14 * * *'  # Runs daily at 2:00 PM UTC (10:00 AM EDT)
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   send-reminder:
