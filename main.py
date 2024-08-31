@@ -58,15 +58,42 @@ def send_reminder():
     current_week = (days_passed // 7) % 2 + 1  # 1 for Week 1, 2 for Week 2
     weekday = today.strftime('%a')[:2]  # Get short form of the day ('Mo', 'Tu', etc.)
 
-    for record in schedule_data['schedule']:
-        if record['week'] == current_week and record['day'] == weekday:
-            cook = record['cook']
-            dish = record['dish']
+    if weekday == 'Su':
+        # Special case for Sunday: send an email to everyone
+        for cook in EMAIL_RECIPIENTS.keys():
             recipient_email = EMAIL_RECIPIENTS.get(cook)
             if recipient_email:
-                subject = "Cooking Reminder"
-                body = f"Reminder: {cook}, today you are cooking {dish}."
+                subject = "Sunday Cooking Reminder"
+                body = f"Reminder: {cook}, today is a rest day or special task!"
                 send_email(recipient_email, subject, body)
+    else:
+        # Regular schedule for other days
+        for record in schedule_data['schedule']:
+            if record['week'] == current_week and record['day'] == weekday:
+                cook = record['cook']
+                dish = record['dish']
+                recipient_email = EMAIL_RECIPIENTS.get(cook)
+                if recipient_email:
+                    subject = "Cooking Reminder"
+                    body = f"Reminder: {cook}, today you are cooking {dish}."
+                    send_email(recipient_email, subject, body)
+
+    
+    # today = datetime.date.today()
+    # start_date = datetime.date(2024, 9, 2)  # Replace with your actual start date
+    # days_passed = (today - start_date).days
+    # current_week = (days_passed // 7) % 2 + 1  # 1 for Week 1, 2 for Week 2
+    # weekday = today.strftime('%a')[:2]  # Get short form of the day ('Mo', 'Tu', etc.)
+
+    # for record in schedule_data['schedule']:
+    #     if record['week'] == current_week and record['day'] == weekday:
+    #         cook = record['cook']
+    #         dish = record['dish']
+    #         recipient_email = EMAIL_RECIPIENTS.get(cook)
+    #         if recipient_email:
+    #             subject = "Cooking Reminder"
+    #             body = f"Reminder: {cook}, today you are cooking {dish}."
+    #             send_email(recipient_email, subject, body)
 
 # Run the reminder function
 send_reminder()
