@@ -1,0 +1,22 @@
+name: Cooking Reminder
+
+on:
+  schedule:
+    - cron: '30 10 * * *'  # Runs daily at 10:30 AM UTC
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install python-dotenv
+      - name: Run reminder script
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+        run: python main.py
